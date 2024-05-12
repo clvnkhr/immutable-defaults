@@ -5,7 +5,7 @@
 groups = ["default", "test"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:a5cbd343f540d76e78cf64c4feaee2f3fe4de40eed9d087e9570989ee2f8bd63"
+content_hash = "sha256:3560f644f34330154820a220714a421b622ec98b532774ed5c8e62c996b37f5c"
 
 [[package]]
 name = "attrs"
@@ -16,6 +16,17 @@ groups = ["test"]
 files = [
     {file = "attrs-23.2.0-py3-none-any.whl", hash = "sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1"},
     {file = "attrs-23.2.0.tar.gz", hash = "sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30"},
+]
+
+[[package]]
+name = "default-mutable"
+version = "0.1.0"
+requires_python = ">=3,<4"
+summary = "Prevent mutable default arguments behavior"
+groups = ["default"]
+files = [
+    {file = "default_mutable-0.1.0-py3-none-any.whl", hash = "sha256:578aef7579fb25a3f4beb5b3e1c0644c43cd18a6d4c446696eea1c82130c9403"},
+    {file = "default_mutable-0.1.0.tar.gz", hash = "sha256:65a122fa1219efdc1cf2075468d32fb329ec2ab75271b48e5b91b3b1b5f24ea3"},
 ]
 
 [[package]]
@@ -54,4 +65,15 @@ groups = ["test"]
 files = [
     {file = "sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0"},
     {file = "sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88"},
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.11.0"
+requires_python = ">=3.8"
+summary = "Backported and Experimental Type Hints for Python 3.8+"
+groups = ["default"]
+files = [
+    {file = "typing_extensions-4.11.0-py3-none-any.whl", hash = "sha256:c1f94d72897edaf4ce775bb7558d5b79d8126906a14ea5ed1635921406c0387a"},
+    {file = "typing_extensions-4.11.0.tar.gz", hash = "sha256:83f085bd5ca59c80295fc2a82ab5dac679cbe02b9f33f7d83af68e241bea51b0"},
 ]

@@ -312,11 +312,7 @@ class TestImmutableDefaults(unittest.TestCase):
         self.assertEqual(append1(1), [1])
         self.assertEqual(append1(1), [1, 1])
 
-    # TODO: test on methods!!!!
-
-
-# Property-based tests
-class TestImmutableDefaultsHypothesis(unittest.TestCase):
+    # Property-based tests
     @given(st.integers(), st.integers())
     def test_integer_default_still_works(self, x, y) -> None:
         """verify no change in behavior after decorating function without mutable defaults"""
@@ -361,6 +357,73 @@ class TestImmutableDefaultsHypothesis(unittest.TestCase):
         # nb if {kk: vv, k: v} in above line is replaced with {k:v, kk: vv} test will fail
         # since second key val assignment can override when k=kk
         self.assertEqual(add_kv_to_dict(k, v), {k: v})
+
+    def test_decorator_on_method(self) -> None:
+        class MyClass:
+            @immutable_defaults
+            def append(self, x, to=[]):
+                to.append(x)
+                return to
+
+        my_class = MyClass()
+        self.assertEqual(my_class.append(5), [5])
+        self.assertEqual(my_class.append(1), [1])
+
+    def test_decorator_on_classmethod1(self) -> None:
+        class MyClass:
+            @classmethod
+            @immutable_defaults
+            def append(cls, x, to=[]):
+                to.append(x)
+                return to
+
+        self.assertEqual(MyClass.append(5), [5])
+        self.assertEqual(MyClass.append(1), [1])
+        my_class = MyClass()
+        self.assertEqual(my_class.append(5), [5])
+        self.assertEqual(my_class.append(1), [1])
+
+    def test_decorator_on_staticmethod1(self) -> None:
+        class MyClass:
+            @staticmethod
+            @immutable_defaults
+            def append(x, to=[]):
+                to.append(x)
+                return to
+
+        self.assertEqual(MyClass.append(5), [5])
+        self.assertEqual(MyClass.append(1), [1])
+        my_class = MyClass()
+        self.assertEqual(my_class.append(5), [5])
+        self.assertEqual(my_class.append(1), [1])
+
+    # def test_decorator_on_staticmethod2(self) -> None:
+    #     class MyClass:
+    #         @immutable_defaults
+    #         @staticmethod
+    #         def append(x, to=[]):
+    #             to.append(x)
+    #             return to
+
+    #     self.assertEqual(MyClass.append(5), [5])
+    #     self.assertEqual(MyClass.append(1), [1])
+    #     my_class = MyClass()
+    #     self.assertEqual(my_class.append(5), [5])
+    #     self.assertEqual(my_class.append(1), [1])
+
+    # def test_decorator_on_classmethod2(self) -> None:
+    #     class MyClass:
+    #         @immutable_defaults
+    #         @classmethod
+    #         def append(cls, x, to=[]):
+    #             to.append(x)
+    #             return to
+
+    #     print(type(MyClass.append))
+    #     # self.assertEqual(MyClass.append(5), [5])
+    #     # self.assertEqual(MyClass.append(1), [1])
+
+    # todo: test_decorator_on_classmethod
 
 
 if __name__ == "__main__":

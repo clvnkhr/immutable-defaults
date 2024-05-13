@@ -49,7 +49,7 @@ def immutable_defaults(
             return copy.copy(v)
 
     else:
-        raise ImmutableDefaultsError("deepcopy must be boolean or a list")
+        raise ImmutableDefaultsError("deepcopy must be boolean or an iterable")
 
     def _immutable_defaults(f: F) -> F:
         # keep a copy of the defaults outside of the wrapped function

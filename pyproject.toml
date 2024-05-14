@@ -1,7 +1,7 @@
 [project]
 name = "immutable-defaults-py"
 version = "0.1.0"
-description = "decorator for immutable defaults"
+description = "Default template for PDM package"
 authors = [
     {name = "clvnkhr", email = "calvin_khor@hotmail.com"},
 ]
@@ -9,14 +9,9 @@ dependencies = [
     "typing-extensions>=4.11.0",
     "default-mutable>=0.1.0",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 readme = "README.md"
 license = {text = "MIT"}
-
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
-
 
 [tool.pdm]
 distribution = true
@@ -25,3 +20,7 @@ distribution = true
 test = [
     "hypothesis>=6.100.2",
 ]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"

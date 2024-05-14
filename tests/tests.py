@@ -1,7 +1,7 @@
 import unittest
 from hypothesis import given, strategies as st
 from immutable_defaults import immutable_defaults, ImmutableDefaultsError
-from typing import TypeVar
+from typing import TypeVar, cast
 import copy
 
 T = TypeVar("T")
@@ -79,14 +79,27 @@ class TestImmutableDefaults(unittest.TestCase):
 
         @immutable_defaults(deepcopy=False)
         def inner_append_nodeep(x, xss=xss):
+            xss.append([])
             for xs in xss:
                 xs.append(x)
             return xss
 
-        self.assertEqual(inner_append_nodeep(42), [[1, 42], ["two", 42], [3.1, 42]])
         self.assertEqual(
-            inner_append_nodeep(1), [[1, 42, 1], ["two", 42, 1], [3.1, 42, 1]]
+            inner_append_nodeep(42), [[1, 42], ["two", 42], [3.1, 42], [42]]
         )
+        self.assertEqual(
+            inner_append_nodeep(1), [[1, 42, 1], ["two", 42, 1], [3.1, 42, 1], [1]]
+        )
+        self.assertIsNot(inner_append_nodeep(-1), xss)
+
+    def test_deepcopy_false_shallow_copy_enough_for_list(self) -> None:
+        @immutable_defaults(deepcopy=False)
+        def append_to_list2(value: T, my_list: list[T] = []) -> list[T]:
+            my_list.append(value)
+            return my_list
+
+        self.assertEqual(append_to_list2(1), [1])
+        self.assertEqual(append_to_list2(2), [2])
 
     def test_deepcopy_list_restriction_works(self) -> None:
         xss1: list[list[int | str]] = [[1], ["two"]]
@@ -132,7 +145,7 @@ class TestImmutableDefaults(unittest.TestCase):
 
             inner_append_shallow_deep(1)
 
-        e = e_ctx.exception.args[0]
+        e: str = cast(str, e_ctx.exception.args[0]).casefold()
         self.assertTrue(
             "shallow" in e and "deep" in e
         )  # fuzzy test for assertion message
@@ -244,9 +257,17 @@ class TestImmutableDefaults(unittest.TestCase):
             custom.value[0].append(1)
             return custom
 
-        result: list[int] = func_with_custom_default().value
-        self.assertEqual(result, [[10, 1]])
-        self.assertEqual(result, [[10, 1]])
+        self.assertEqual(func_with_custom_default().value, [[10, 1]])
+        self.assertEqual(func_with_custom_default().value, [[10, 1]])
+
+        def func_with_custom_default2(
+            custom=CustomClass(init),
+        ) -> CustomClass:
+            custom.value[0].append(1)
+            return custom
+
+        self.assertEqual(func_with_custom_default2().value, [[10, 1]])
+        self.assertNotEqual(func_with_custom_default2().value, [[10, 1]])
 
     def test_idempotence(self) -> None:
         @immutable_defaults

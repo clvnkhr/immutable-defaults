@@ -25,7 +25,53 @@ def immutable_defaults[**P, T](
     ignore: Iterable[str] | None = None,
     deepcopy: bool | Iterable[str] = True,
 ) -> F[P, T] | F[[F[P, T]], F[P, T]]:
-    """decorator to make a new (deep) copy of the original mutable defaults on every function call."""
+    """
+    A decorator to make default function arguments immutable.
+
+    This decorator deep copies default arguments before passing them to the function,
+    preventing the common bug where mutable defaults (like lists or dicts) are modified
+    between calls. It supports simple configuration options to control the copying behavior
+    for performance tuning or specific use cases.
+
+    Parameters:
+    - deepcopy (bool | Iterable[str], optional): Configures the copying behavior of default arguments.
+      If True (default), all mutable defaults are deep copied using `copy.deepcopy`.
+      If False, `copy.copy` is used for shallow copying.
+      If an iterable of argument names is provided, those specific arguments will be deep copied,
+      while other mutable defaults will be shallow copied.
+    - ignore (Iterable[str] | None, optional): A list of argument names whose defaults should retain
+      the default Python behavior (i.e., not copied). Defaults to None.
+
+    The decorator also performs input validation to ensure no mutable default is marked for both
+    shallow and deep copying, and that ignored arguments are not also supposed to be made immutable.
+
+    Raises:
+    - ImmutableDefaultsError: If the same mutable default is marked for both shallow and deep copying.
+    - KeyError: If arguments specified in `deepcopy` or `ignore` are not found in the function signature.
+
+    Example:
+    ```python
+    @immutable_defaults
+    def my_function(a: list = []):
+        a.append("world")
+        return a
+
+    print(my_function())  # ['world']
+    print(my_function(a=["hello"]))  # ['hello', 'world']
+    print(my_function(["HELLO"]))  # ['HELLO', 'world']
+    print(my_function())  #  ['world']
+
+    @immutable_defaults(ignore=["b"])
+    def my_function2(a=["hello"], b=[]):
+        a.append("world")
+        b.append("!")
+        return a + b
+
+    print(my_function2())  # ['hello', 'world', '!']
+    print(my_function2())  # ['hello', 'world', '!', '!']
+    print(my_function2())  # ['hello', 'world', '!', '!', '!']
+    ```
+    """
     ignore = [] if ignore is None else ignore
 
     def dc1[U](_: str, v: U) -> U:

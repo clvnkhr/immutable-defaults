@@ -1,15 +1,10 @@
 import inspect
 import copy
 from functools import wraps
-from typing import Any, Callable, TypeVar, overload
-from typing_extensions import ParamSpec
+from typing import Any, overload
+from typing import Callable as F
 from collections import defaultdict
 from collections.abc import Iterable
-
-T = TypeVar("T")
-U = TypeVar("U")
-P = ParamSpec("P")
-F = Callable[P, T]
 
 
 class ImmutableDefaultsError(Exception):
@@ -17,41 +12,46 @@ class ImmutableDefaultsError(Exception):
 
 
 @overload
-def immutable_defaults(__f: F) -> F: ...
+def immutable_defaults[**P, T](_f: F[P, T]) -> F[P, T]: ...
 @overload
-def immutable_defaults(
-    *, ignore: Iterable[str] | None = None, deepcopy: bool | Iterable[str] = True
-) -> Callable[[F], F]: ...
-def immutable_defaults(
-    _f: F | None = None,
+def immutable_defaults[**P, T](
     *,
     ignore: Iterable[str] | None = None,
     deepcopy: bool | Iterable[str] = True,
-):
+) -> F[[F[P, T]], F[P, T]]: ...
+def immutable_defaults[**P, T](
+    _f: F[P, T] | None = None,
+    *,
+    ignore: Iterable[str] | None = None,
+    deepcopy: bool | Iterable[str] = True,
+) -> F[P, T] | F[[F[P, T]], F[P, T]]:
     """decorator to make a new (deep) copy of the original mutable defaults on every function call."""
     ignore = [] if ignore is None else ignore
 
+    def dc1[U](_: str, v: U) -> U:
+        return copy.deepcopy(v)
+
+    def dc2[U](_: str, v: U) -> U:
+        return copy.copy(v)
+
     if deepcopy is True:
-
-        def dc(_: str, v: U) -> U:  # type: ignore
-            return copy.deepcopy(v)
-
+        dc = dc1
     elif deepcopy is False:
-
-        def dc(_: str, v: U) -> U:  # type: ignore
-            return copy.copy(v)
+        dc = dc2
 
     elif isinstance(deepcopy, Iterable):
 
-        def dc(k: str, v: U) -> U:  # type: ignore
+        def dc3[U](k: str, v: U) -> U:
             if k in deepcopy:
                 return copy.deepcopy(v)
             return copy.copy(v)
 
+        dc = dc3
+
     else:
         raise ImmutableDefaultsError("deepcopy must be boolean or an iterable")
 
-    def _immutable_defaults(f: F) -> F:
+    def _immutable_defaults(f: F[P, T]) -> F[P, T]:
         # keep a copy of the defaults outside of the wrapped function
         immut_types: tuple = (int, float, complex, bool, str, tuple, frozenset)
         sig: inspect.Signature = inspect.signature(f)
@@ -96,7 +96,7 @@ def immutable_defaults(
                     del func_defaults[arg]
 
         @wraps(f)
-        def wrapped(*args, **kwargs):
+        def wrapped(*args: P.args, **kwargs: P.kwargs) -> T:
             # Idea:
             # 1. bind_partial the args and kwargs given at call site, store in bound_args
             # 2. manually deep copy each default into bound_args.arguments
@@ -124,26 +124,26 @@ def immutable_defaults(
 
 
 if __name__ == "__main__":
-    # Example usage
+
     @immutable_defaults
-    def my_function(a, b, c: list = []):
-        """basic function"""
-        c.append("world")
-        return a, b, c
+    def my_function(a: list = []):
+        a.append("world")
+        return a
 
-    print(my_function(1, 2))  ############## (1, 2, ['world'])
-    print(my_function(2, 6, c=["hello"]))  # (2, 6, ['hello', 'world'])
-    print(my_function(3, 9, ["HELLO"]))  ### (3, 9, ['HELLO', 'world'])
-    print(my_function(1, 2))  ############## (1, 2, ['world'])
+    print(my_function())  # ['world']
+    print(my_function(a=["hello"]))  # ['hello', 'world']
+    print(my_function(["HELLO"]))  # ['HELLO', 'world']
+    print(my_function())  #  ['world']
 
-    @immutable_defaults(ignore=["c"])
-    def my_function2(a, b, c: list = []):
+    @immutable_defaults(ignore=["b"])
+    def my_function2(a=["hello"], b=[]):
         """basic function with ignore parameter"""
-        c.append("world")
-        return a, b, c
+        a.append("world")
+        b.append("!")
+        return a + b
 
-    print(my_function2(1, 2))  # (1, 2, ['world'])
-    print(my_function2(1, 3))  # (1, 3, ['world', 'world'])
-    print(my_function2(1, 4))  # (1, 4, ['world', 'world', 'world'])
+    print(my_function2())  # ['hello', 'world', '!']
+    print(my_function2())  # ['hello', 'world', '!', '!']
+    print(my_function2())  # ['hello', 'world', '!', '!', '!']
 
     # more exhaustive tests in tests/tests.py

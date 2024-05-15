@@ -1,7 +1,7 @@
 [project]
-name = "immutable-defaults-py"
+name = "immutable-defaults"
 version = "0.1.0"
-description = "Default template for PDM package"
+description = "Immutable defaults for Python"
 authors = [
     {name = "clvnkhr", email = "calvin_khor@hotmail.com"},
 ]
@@ -9,7 +9,7 @@ dependencies = [
     "typing-extensions>=4.11.0",
     "default-mutable>=0.1.0",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}
 

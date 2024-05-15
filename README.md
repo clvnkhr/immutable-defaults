@@ -1,8 +1,10 @@
 # immutable_defaults
 
-Simple decorator to force immutability to function arguments by copying. Never again pass `None` when your heart wants to pass an empty list. Also works for arbitrary objects. Has simple config options for performance.
+Simple decorator to force immutability to function arguments by deepcopying. Never again pass `None` when your heart wants to pass an empty list. Also works for arbitrary objects that can be deepcopied. Has simple config options for granularity or performance (copy vs deepcopy).
 
 No dependencies.
+
+In order to use various type hints we require Python >=3.12. For older versions there are other packages (Sorry. See Prior Art section below)
 
 ## How to install
 
@@ -75,14 +77,15 @@ def f(x, xss1 = xss, xss2 = xss): ...
 ```
 
 - A `KeyError` is raised if either `deepcopy` or `ignore` have arguments that cannot be found in the signature of the decorated function.
-- `ignore` takes precedence over `deepcopy`
+  - It would have been easy to silently do nothing when variables in `ignore` are not present, but this would make typos very hard to debug.
+- `ignore` takes precedence over `deepcopy`, i.e. `@immutable_defaults(ignore=["x"], deepcopy=["x"])` will do the same thing as `@immutable_defaults(ignore=["x"])`
 
 ## Prior art
 
 (Comments valid May 13 2024)
 
 - comparison with <https://pypi.org/project/immutable_default_args/>
-  - we deep copy all defaults except for standard immutable types (int, float, complex, bool, str, tuple, frozenset). This means we cover sets, and also other custom mutable containers
+  - we deep copy all defaults except for standard immutable types (int, float, complex, bool, str, tuple, frozenset). This means we cover sets, and also other custom mutable objects that implement `__deepcopy__` (or optionally `__copy__`).
   - we do not have a metaclass that auto-applies to all methods
 - comparison with <https://pypi.org/project/python-immutable/>
 - comparison with <https://github.com/roodrepo/default_mutable/>

@@ -1,3 +1,5 @@
+[![tests](https://github.com/clvnkhr/immutable-defaults/actions/workflows/python-package.yml/badge.svg)](https://github.com/clvnkhr/immutable-defaults/actions/workflows/python-package.yml)
+
 # immutable_defaults
 
 Simple decorator to force immutability to function arguments by deepcopying. Never again pass `None` when your heart wants to pass an empty list. Also works for arbitrary objects that can be deepcopied. Has simple config options for granularity or performance (copy vs deepcopy).

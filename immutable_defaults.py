@@ -35,10 +35,9 @@ def immutable_defaults[**P, T](
 
     Parameters:
     - deepcopy (bool | Iterable[str], optional): Configures the copying behavior of default arguments.
-      If True (default), all mutable defaults are deep copied using `copy.deepcopy`.
-      If False, `copy.copy` is used for shallow copying.
-      If an iterable of argument names is provided, those specific arguments will be deep copied,
-      while other mutable defaults will be shallow copied.
+      - True (default): mutable defaults are copied using `copy.deepcopy`.
+      - False: use `copy.copy`.
+      - Iterable: deepcopy args in deepcopy and shallow copy others.
     - ignore (Iterable[str] | None, optional): A list of argument names whose defaults should retain
       the default Python behavior (i.e., not copied). Defaults to None.
 

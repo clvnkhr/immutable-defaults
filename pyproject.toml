@@ -20,6 +20,9 @@ distribution = true
 test = [
     "hypothesis>=6.100.2",
 ]
+dev = [
+    "nox>=2024.4.15",
+]
 
 [build-system]
 requires = ["pdm-backend"]

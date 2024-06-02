@@ -100,3 +100,4 @@ def f(x, xss1 = xss, xss2 = xss): ...
 
 - Implement class decorator
 - Performance benchmarking - what is the overhead?
+- Make publishing to pypi part of github workflow

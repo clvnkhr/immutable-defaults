@@ -1,6 +1,6 @@
-[![tests](https://github.com/clvnkhr/immutable-defaults/actions/workflows/python-package.yml/badge.svg)](https://github.com/clvnkhr/immutable-defaults/actions/workflows/python-package.yml)
-
 # immutable_defaults
+
+[![tests](https://github.com/clvnkhr/immutable-defaults/actions/workflows/python-package.yml/badge.svg)](https://github.com/clvnkhr/immutable-defaults/actions/workflows/python-package.yml)
 
 Simple decorator to force immutability to function arguments by deepcopying. Never again pass `None` when your heart wants to pass an empty list. Also works for arbitrary objects that can be deepcopied. Has simple config options for granularity or performance (copy vs deepcopy).
 
@@ -10,7 +10,7 @@ In order to use various type hints we require Python >=3.12. For older versions 
 
 ## How to install
 
-TODO
+`pip install immutable-defaults` or your equivalent (e.g. `pdm add immutable-defaults`)
 
 ## Example usage
 
@@ -96,8 +96,7 @@ def f(x, xss1 = xss, xss2 = xss): ...
   - completely different solution to the mutable arguments problem
   - only works for empty containers
 
-## todo
+## Todo
 
-- Implement metaclass?
-- Performance benchmarking - what is the price of the overhead?
-- consider publishing to pypi?
+- Implement class decorator
+- Performance benchmarking - what is the overhead?

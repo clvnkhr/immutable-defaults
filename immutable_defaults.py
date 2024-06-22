@@ -96,6 +96,9 @@ def immutable_defaults[**P, T](
     else:
         raise ImmutableDefaultsError("deepcopy must be boolean or an iterable")
 
+    # NB to allow for optional arguments, we are following the pattern here:
+    # https://mypy.readthedocs.io/en/stable/generics.html#declaring-decorators
+
     def _immutable_defaults(f: F[P, T]) -> F[P, T]:
         # keep a copy of the defaults outside of the wrapped function
         immut_types: tuple = (int, float, complex, bool, str, tuple, frozenset)
@@ -166,6 +169,17 @@ def immutable_defaults[**P, T](
     if _f is None:
         return _immutable_defaults
     return _immutable_defaults(_f)
+
+
+def class_with_immutable_defaults[Class](cls: Class) -> Class:
+    """
+    decorator that applies the immutable_defaults decorator
+    (with default args) to all methods of the class cls.
+    """
+    for name in dir(cls):
+        if callable(getattr(cls, name)):
+            setattr(cls, name, immutable_defaults(getattr(cls, name)))
+    return cls
 
 
 if __name__ == "__main__":

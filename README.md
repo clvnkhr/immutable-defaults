@@ -6,7 +6,7 @@ Simple decorator to force immutability to function arguments by deepcopying. Nev
 
 No dependencies.
 
-In order to use various type hints we require Python >=3.12. For older versions there are other packages (Sorry. See Prior Art section below)
+In order to use various type hints we require Python >=3.12.
 
 ## How to install
 

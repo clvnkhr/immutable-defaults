@@ -6,8 +6,6 @@ authors = [
     {name = "clvnkhr", email = "calvin_khor@hotmail.com"},
 ]
 dependencies = [
-    "typing-extensions>=4.11.0",
-    "default-mutable>=0.1.0",
 ]
 requires-python = ">=3.12"
 readme = "README.md"

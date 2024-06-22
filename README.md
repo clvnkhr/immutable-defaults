@@ -88,16 +88,15 @@ def f(x, xss1 = xss, xss2 = xss): ...
 
 - comparison with <https://pypi.org/project/immutable_default_args/>
   - we deep copy all defaults except for standard immutable types (int, float, complex, bool, str, tuple, frozenset). This means we cover sets, and also other custom mutable objects that implement `__deepcopy__` (or optionally `__copy__`).
-  - we do not have a metaclass that auto-applies to all methods
+  - Instead of a metaclass, we have a class decorator.
 - comparison with <https://pypi.org/project/python-immutable/>
 - comparison with <https://github.com/roodrepo/default_mutable/>
-  - we have fully typed code and IMO better naming
+  - we have typed code and IMO better naming.
 - comparison with <https://pypi.org/project/python-none-objects/>
-  - completely different solution to the mutable arguments problem
-  - only works for empty containers
+  - completely different solution to the mutable default arguments problem.
+  - only works for empty containers.
 
 ## Todo
 
-- Implement class decorator
 - Performance benchmarking - what is the overhead?
 - Make publishing to pypi part of github workflow

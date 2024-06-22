@@ -418,34 +418,6 @@ class TestImmutableDefaults(unittest.TestCase):
         self.assertEqual(my_class.append(5), [5])
         self.assertEqual(my_class.append(1), [1])
 
-    # def test_decorator_on_staticmethod2(self) -> None:
-    #     class MyClass:
-    #         @immutable_defaults
-    #         @staticmethod
-    #         def append(x, to=[]):
-    #             to.append(x)
-    #             return to
-
-    #     self.assertEqual(MyClass.append(5), [5])
-    #     self.assertEqual(MyClass.append(1), [1])
-    #     my_class = MyClass()
-    #     self.assertEqual(my_class.append(5), [5])
-    #     self.assertEqual(my_class.append(1), [1])
-
-    # def test_decorator_on_classmethod2(self) -> None:
-    #     class MyClass:
-    #         @immutable_defaults
-    #         @classmethod
-    #         def append(cls, x, to=[]):
-    #             to.append(x)
-    #             return to
-
-    #     print(type(MyClass.append))
-    #     # self.assertEqual(MyClass.append(5), [5])
-    #     # self.assertEqual(MyClass.append(1), [1])
-
-    # todo: test_decorator_on_classmethod
-
 
 if __name__ == "__main__":
     unittest.main()

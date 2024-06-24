@@ -1,6 +1,6 @@
 [project]
 name = "immutable-defaults"
-version = "0.1.0"
+version = "0.1.2"
 description = "Immutable defaults for Python"
 authors = [
     {name = "clvnkhr", email = "calvin_khor@hotmail.com"},

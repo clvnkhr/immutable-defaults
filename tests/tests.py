@@ -1,6 +1,6 @@
 import unittest
 from hypothesis import given, strategies as st
-from immutable_defaults.immutable_defaults import (
+from immutable_defaults import (
     immutable_defaults,
     ImmutableDefaultsError,
 )

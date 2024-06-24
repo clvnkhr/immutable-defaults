@@ -1,6 +1,9 @@
 import unittest
 from hypothesis import given, strategies as st
-from immutable_defaults import immutable_defaults, ImmutableDefaultsError
+from immutable_defaults.immutable_defaults import (
+    immutable_defaults,
+    ImmutableDefaultsError,
+)
 from typing import TypeVar, cast
 import copy
 

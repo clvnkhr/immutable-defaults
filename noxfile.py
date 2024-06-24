@@ -5,6 +5,7 @@ import nox
 def tests(session) -> None:
     session.install("hypothesis")
     session.install(".")
+    session.run("eval", "$(pdm venv activate)")
     session.run("python", "-m", "unittest", "discover", "tests")
 
 

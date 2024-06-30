@@ -5,6 +5,7 @@ on:
     branches: [ master ]
 jobs:
   pypi-publish:
+    environment: staging_environment
     name: upload release to PyPI
     runs-on: ubuntu-latest
     permissions:

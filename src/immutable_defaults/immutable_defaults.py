@@ -171,14 +171,19 @@ def immutable_defaults[**P, T](
     return _immutable_defaults(_f)
 
 
-def class_with_immutable_defaults[Class](cls: Class) -> Class:
+def class_with_immutable_defaults[C](cls: C) -> C:
     """
     decorator that applies the immutable_defaults decorator
     (with default args) to all methods of the class cls.
+    Does not apply to class methods and static methods.
     """
-    for name in dir(cls):
-        if callable(getattr(cls, name)):
-            setattr(cls, name, immutable_defaults(getattr(cls, name)))
+    for name, method in inspect.getmembers(cls):
+        if isinstance(inspect.getattr_static(cls, name), classmethod):
+            continue
+        elif isinstance(inspect.getattr_static(cls, name), staticmethod):
+            continue
+        elif inspect.isfunction(method):
+            setattr(cls, name, immutable_defaults(method))
     return cls
 
 

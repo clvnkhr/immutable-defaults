@@ -1,8 +1,10 @@
+from __future__ import annotations
 import unittest
 from hypothesis import given, strategies as st
 from immutable_defaults import (
     immutable_defaults,
     ImmutableDefaultsError,
+    class_with_immutable_defaults,
 )
 from typing import TypeVar, cast
 import copy
@@ -44,6 +46,45 @@ default_xs: list[int] = [42]
 def append_to_xs(value, xs=default_xs):
     xs.append(value)
     return xs
+
+
+class ListWrapper:
+    def __init__(self, xs: list = []):
+        self.xs = xs
+
+    def append(self, x) -> ListWrapper:
+        self.xs.append(x)
+        return self
+
+    @staticmethod
+    def append_staticmethod(y, ys: list = []) -> list:
+        ys.append(y)
+        return ys
+
+    @classmethod
+    def append_classmethod(cls, y, ys: list = []) -> list:
+        ys.append(y)
+        return ys
+
+
+@class_with_immutable_defaults
+class ImmutableListWrapper:
+    def __init__(self, xs: list = []):
+        self.xs = xs
+
+    def append(self, x) -> ImmutableListWrapper:
+        self.xs.append(x)
+        return self
+
+    @staticmethod
+    def append_staticmethod(y, ys: list = []) -> list:
+        ys.append(y)
+        return ys
+
+    @classmethod
+    def append_classmethod(cls, z, zs: list = []) -> list:
+        zs.append(z)
+        return zs
 
 
 class TestImmutableDefaults(unittest.TestCase):
@@ -420,6 +461,30 @@ class TestImmutableDefaults(unittest.TestCase):
         my_class = MyClass()
         self.assertEqual(my_class.append(5), [5])
         self.assertEqual(my_class.append(1), [1])
+
+    def test_class_decorator1(self) -> None:
+        # assert ListWrapper has the usual mutable default behavior
+        self.assertEqual(ListWrapper().append(5).xs, [5])
+        self.assertEqual(ListWrapper().append(2).xs, [5, 2])
+        self.assertEqual(ListWrapper.append_staticmethod(-3), [-3])
+        self.assertEqual(ListWrapper.append_staticmethod(-3), [-3, -3])
+        self.assertEqual(ListWrapper().append_staticmethod(-3), [-3, -3, -3])
+        self.assertEqual(ListWrapper.append_classmethod("class"), ["class"])
+        self.assertEqual(ListWrapper.append_classmethod("method"), ["class", "method"])
+
+        # assert ImmutableListWrapper.__init__ has immutable default behavior
+        self.assertEqual(ImmutableListWrapper().append(5).xs, [5])
+        self.assertEqual(ImmutableListWrapper().append(2).xs, [2])
+
+    def test_class_decorator2(self) -> None:
+        # assert static and class methods not affected (default mutable behavior)
+        self.assertEqual(ImmutableListWrapper.append_staticmethod(3), [3])
+        self.assertEqual(ImmutableListWrapper.append_staticmethod(3), [3, 3])
+        self.assertEqual(ImmutableListWrapper().append_staticmethod(3), [3, 3, 3])
+        self.assertEqual(ImmutableListWrapper.append_classmethod("classy"), ["classy"])
+        self.assertEqual(
+            ImmutableListWrapper.append_classmethod("method"), ["classy", "method"]
+        )
 
 
 if __name__ == "__main__":
